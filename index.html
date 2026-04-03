@@ -695,10 +695,10 @@
 
     <div class="waitlist-block">
       <div class="waitlist-label">Join the waitlist — first cohort is limited</div>
-      <div class="waitlist-row">
-        <input type="email" id="email-hero" placeholder="your@company.com" />
-        <button onclick="joinWaitlist('email-hero', 'success-hero')">Reserve my spot →</button>
-      </div>
+      <form action="https://formspree.io/f/mdapwgrl" method="POST" class="waitlist-row" onsubmit="handleSubmit(event, 'success-hero', this)">
+        <input type="email" name="email" placeholder="your@company.com" required />
+        <button type="submit">Reserve my spot →</button>
+      </form>
       <div class="success-msg" id="success-hero">✓ You're on the list. We'll be in touch shortly.</div>
       <div class="waitlist-note">No spam. One email when the cohort opens.</div>
     </div>
@@ -926,16 +926,16 @@
     <div class="cta-right">
       <div class="cta-label">Join the waitlist</div>
       <div class="cta-form">
-        <div class="waitlist-row">
-          <input type="email" id="email-cta" placeholder="your@company.com" />
-          <button onclick="joinWaitlist('email-cta', 'success-cta')">Reserve my spot →</button>
-        </div>
+        <form action="https://formspree.io/f/mdapwgrl" method="POST" class="waitlist-row" onsubmit="handleSubmit(event, 'success-cta', this)">
+          <input type="email" name="email" placeholder="your@company.com" required />
+          <button type="submit">Reserve my spot →</button>
+        </form>
         <div class="success-msg" id="success-cta" style="background: rgba(61,90,153,0.15); border-color: #8fa8d4; color: #8fa8d4;">✓ You're on the list. We'll be in touch shortly.</div>
         <div class="waitlist-note cta-note">No spam. One email when the cohort opens.</div>
       </div>
       <div style="margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(245,242,236,0.1);">
         <div style="font-family: var(--mono); font-size: 11px; color: rgba(245,242,236,0.3); letter-spacing: 0.06em; margin-bottom: 8px;">Questions? Reach us at</div>
-        <a href="mailto:hello@incro.pl" style="font-family: var(--mono); font-size: 13px; color: rgba(245,242,236,0.6); text-decoration: none;">hello@incro.pl</a>
+        <a href="/cdn-cgi/l/email-protection#cea6aba2a2a18ea7a0adbca1e0bea2" style="font-family: var(--mono); font-size: 13px; color: rgba(245,242,236,0.6); text-decoration: none;"><span class="__cf_email__" data-cfemail="7c14191010133c15121f0e13520c10">[email&#160;protected]</span></a>
       </div>
     </div>
   </div>
@@ -951,45 +951,33 @@
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-async function joinWaitlist(inputId, successId) {
-  const input = document.getElementById(inputId);
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+async function handleSubmit(e, successId, form) {
+  e.preventDefault();
+  const btn = form.querySelector('button');
   const success = document.getElementById(successId);
-  const email = input.value.trim();
-  const btn = input.parentElement.querySelector('button');
-
-  if (!email || !email.includes('@')) {
-    input.style.outline = '2px solid #c0392b';
-    setTimeout(() => { input.style.outline = ''; }, 1200);
-    return;
-  }
+  const data = new FormData(form);
 
   btn.textContent = 'Sending...';
   btn.disabled = true;
 
-  try {
-    const res = await fetch('https://formspree.io/f/mdapwgrl', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email: email, _subject: 'New CFO Bootcamp Waitlist Signup' })
-    });
+  const res = await fetch('https://formspree.io/f/mdapwgrl', {
+    method: 'POST',
+    body: data,
+    headers: { 'Accept': 'application/json' }
+  });
 
-    if (res.ok) {
-      input.parentElement.style.display = 'none';
-      success.style.display = 'block';
-    } else {
-      btn.textContent = 'Reserve my spot →';
-      btn.disabled = false;
-      alert('Something went wrong. Please try again.');
-    }
-  } catch(e) {
+  if (res.ok) {
+    form.style.display = 'none';
+    success.style.display = 'block';
+  } else {
     btn.textContent = 'Reserve my spot →';
     btn.disabled = false;
-    alert('Something went wrong. Please try again.');
+    alert('Something went wrong — please email us directly at hello@incro.pl');
   }
 }
 
-// Allow pressing Enter in email input
+// Allow pressing Enter in email inputs
 document.addEventListener('DOMContentLoaded', function() {
   ['email-hero', 'email-cta'].forEach(function(id) {
     const input = document.getElementById(id);
@@ -1005,13 +993,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Subtle scroll-triggered fade for week rows
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.style.opacity = '1';
-      e.target.style.transform = 'translateY(0)';
-    }
-  });
-}, { threshold: 0.15 });
-
-document.querySelectorAll('.week-row, .for-cell,
+const observer = new IntersectionObserver((entrie
