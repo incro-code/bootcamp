@@ -935,7 +935,7 @@
       </div>
       <div style="margin-top: 40px; padding-top: 32px; border-top: 1px solid rgba(245,242,236,0.1);">
         <div style="font-family: var(--mono); font-size: 11px; color: rgba(245,242,236,0.3); letter-spacing: 0.06em; margin-bottom: 8px;">Questions? Reach us at</div>
-        <a href="/cdn-cgi/l/email-protection#771f121b1b18371e1914051859071b" style="font-family: var(--mono); font-size: 13px; color: rgba(245,242,236,0.6); text-decoration: none;"><span class="__cf_email__" data-cfemail="79111c1515163910171a0b16570915">[email&#160;protected]</span></a>
+        <a href="mailto:hello@incro.pl" style="font-family: var(--mono); font-size: 13px; color: rgba(245,242,236,0.6); text-decoration: none;">hello@incro.pl</a>
       </div>
     </div>
   </div>
@@ -971,21 +971,38 @@ async function joinWaitlist(inputId, successId) {
     const res = await fetch('https://formspree.io/f/mdapwgrl', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email })
+      body: JSON.stringify({ email: email, _subject: 'New CFO Bootcamp Waitlist Signup' })
     });
 
     if (res.ok) {
       input.parentElement.style.display = 'none';
       success.style.display = 'block';
     } else {
-      btn.textContent = 'Try again →';
+      btn.textContent = 'Reserve my spot →';
       btn.disabled = false;
+      alert('Something went wrong. Please try again.');
     }
-  } catch {
-    btn.textContent = 'Try again →';
+  } catch(e) {
+    btn.textContent = 'Reserve my spot →';
     btn.disabled = false;
+    alert('Something went wrong. Please try again.');
   }
 }
+
+// Allow pressing Enter in email input
+document.addEventListener('DOMContentLoaded', function() {
+  ['email-hero', 'email-cta'].forEach(function(id) {
+    const input = document.getElementById(id);
+    if (input) {
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          const successId = id === 'email-hero' ? 'success-hero' : 'success-cta';
+          joinWaitlist(id, successId);
+        }
+      });
+    }
+  });
+});
 
 // Subtle scroll-triggered fade for week rows
 const observer = new IntersectionObserver((entries) => {
