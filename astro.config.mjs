@@ -3,6 +3,7 @@ import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
   base: "/bootcamp",
+  trailingSlash: "never",
   build: {
     assetsPrefix: "/bootcamp",
   },
