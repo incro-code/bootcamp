@@ -1,16 +1,6 @@
 import { defineConfig } from "astro/config";
-import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
+  output: "static",
   base: "/bootcamp",
-  trailingSlash: "never",
-  build: {
-    assetsPrefix: "/bootcamp",
-  },
-  output: "server",
-  adapter: cloudflare({
-    platformProxy: {
-      enabled: true,
-    },
-  }),
 });
